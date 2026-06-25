@@ -8,7 +8,7 @@ class TaskModel {
 
   //Attributes of the class
   final String title;
-  final bool isCompleted ;
+ bool isCompleted ;
   final String? description;
   final DateTime? date;
   Id id = Isar.autoIncrement;
