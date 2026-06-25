@@ -1,14 +1,18 @@
 import "package:isar_community/isar.dart";
 import "package:intl/intl.dart";
+import "package:equatable/equatable.dart";
 
 part 'task_model.g.dart';
 
-@collection// Syntaxe utilisee pour preciser a Isar de transformer cette classe en table de BD
-class TaskModel {
+
+
+@Collection(ignore: {'copyWith', 'props'})// Syntaxe utilisee pour preciser a Isar de transformer cette classe en table de BD
+// ignore: must_be_immutable
+class TaskModel extends Equatable{
 
   //Attributes of the class
   final String title;
- bool isCompleted ;
+  bool isCompleted;
   final String? description;
   final DateTime? date;
   Id id = Isar.autoIncrement;
@@ -45,4 +49,6 @@ class TaskModel {
   String get dateFormatee {
     return DateFormat('dd/MM/yyyy').format(date ?? DateTime.now());//Getter utilise pour concretement faciliter la lisibite dnas le ui 
   }
+  @override
+  List<Object?> get props => [id, title];
 }

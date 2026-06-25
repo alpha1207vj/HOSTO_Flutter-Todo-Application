@@ -17,36 +17,88 @@ class TaskRepositoryImpl extends TaskRepository
   }
 
   @override 
-  Future<void> saveTask(TaskModel task) async 
+  Future<String?> saveTask(TaskModel task) async 
   {
-     await isar.taskModels.put(task);
+      if(task.title.trim().isEmpty)
+        {
+          return "Failed to save task:No title entered";
+        }
+      try
+      {
+         await isar.writeTxn(() 
+      async {
+      
+        await isar.taskModels.put(task);
+      });
+      return null ;
+      }
+      catch(e)
+      {
+        return "Failed to save task: ${e.toString()}";
+      }
+     
   }
 
   @override
-  Future<bool> deleteTask(int id) async
+  Future<String?> deleteTask(int id) async
   {
-    return await isar.writeTxn(()async
+    try
     {
-      return await isar.taskModels.delete(id);
+       return await isar.writeTxn(()async
+    {
+      final isDeleted =  await isar.taskModels.delete(id);
+      if(isDeleted)
+      {
+        return null;
+      }
+      else 
+      {
+        return "Failed to delete task";
+      }
     });
+    }
+    catch(e)
+    {
+      return "Failed to delete task: ${e.toString()}";
+    }
   }
 
   @override 
   Future<TaskModel?> getTaskById(int id) async 
   {
-    return await isar.taskModels.get(id);
+    final myTask = await isar.taskModels.get(id);
+
+    if (myTask != null) {
+     return myTask;
+}   else {
+     return null;
+}
+    
   }
 
   @override 
-  Future<bool> toggleStatus(int id) async 
+  Future<String?> toggleStatus(int id) async 
   {
-    return await isar.writeTxn(()async
+    try{
+       return await isar.writeTxn(()async
     {
      final specificTask = await isar.taskModels.get(id);
-     if(specificTask == null) return false;
-     specificTask.isCompleted = !specificTask.isCompleted;
-     await isar.taskModels.put(specificTask);
-     return true;
+     if(specificTask == null) 
+     {
+      return "Error changing task status" ;
+     }
+     else
+     {
+      specificTask.isCompleted = !specificTask.isCompleted;
+      await isar.taskModels.put(specificTask);
+      return null;
+     }
     });
+    }
+    catch(e)
+    {
+      return "Error changing task status: ${e.toString()}";
+    }
+   
   }
 }

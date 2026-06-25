@@ -28,12 +28,18 @@ const TaskModelSchema = CollectionSchema(
       name: r'description',
       type: IsarType.string,
     ),
+    r'hashCode': PropertySchema(id: 3, name: r'hashCode', type: IsarType.long),
     r'isCompleted': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'isCompleted',
       type: IsarType.bool,
     ),
-    r'title': PropertySchema(id: 4, name: r'title', type: IsarType.string),
+    r'stringify': PropertySchema(
+      id: 5,
+      name: r'stringify',
+      type: IsarType.bool,
+    ),
+    r'title': PropertySchema(id: 6, name: r'title', type: IsarType.string),
   },
 
   estimateSize: _taskModelEstimateSize,
@@ -77,8 +83,10 @@ void _taskModelSerialize(
   writer.writeDateTime(offsets[0], object.date);
   writer.writeString(offsets[1], object.dateFormatee);
   writer.writeString(offsets[2], object.description);
-  writer.writeBool(offsets[3], object.isCompleted);
-  writer.writeString(offsets[4], object.title);
+  writer.writeLong(offsets[3], object.hashCode);
+  writer.writeBool(offsets[4], object.isCompleted);
+  writer.writeBool(offsets[5], object.stringify);
+  writer.writeString(offsets[6], object.title);
 }
 
 TaskModel _taskModelDeserialize(
@@ -90,8 +98,8 @@ TaskModel _taskModelDeserialize(
   final object = TaskModel(
     date: reader.readDateTimeOrNull(offsets[0]),
     description: reader.readStringOrNull(offsets[2]),
-    isCompleted: reader.readBool(offsets[3]),
-    title: reader.readString(offsets[4]),
+    isCompleted: reader.readBool(offsets[4]),
+    title: reader.readString(offsets[6]),
   );
   object.id = id;
   return object;
@@ -111,8 +119,12 @@ P _taskModelDeserializeProp<P>(
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (reader.readBool(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 4:
+      return (reader.readBool(offset)) as P;
+    case 5:
+      return (reader.readBoolOrNull(offset)) as P;
+    case 6:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -597,6 +609,65 @@ extension TaskModelQueryFilter
     });
   }
 
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> hashCodeEqualTo(
+    int value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'hashCode', value: value),
+      );
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> hashCodeGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'hashCode',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> hashCodeLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'hashCode',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> hashCodeBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'hashCode',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
+    });
+  }
+
   QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> idEqualTo(
     Id value,
   ) {
@@ -662,6 +733,33 @@ extension TaskModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'isCompleted', value: value),
+      );
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> stringifyIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'stringify'),
+      );
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition>
+  stringifyIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'stringify'),
+      );
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> stringifyEqualTo(
+    bool? value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'stringify', value: value),
       );
     });
   }
@@ -856,6 +954,18 @@ extension TaskModelQuerySortBy on QueryBuilder<TaskModel, TaskModel, QSortBy> {
     });
   }
 
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> sortByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> sortByHashCodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.desc);
+    });
+  }
+
   QueryBuilder<TaskModel, TaskModel, QAfterSortBy> sortByIsCompleted() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isCompleted', Sort.asc);
@@ -865,6 +975,18 @@ extension TaskModelQuerySortBy on QueryBuilder<TaskModel, TaskModel, QSortBy> {
   QueryBuilder<TaskModel, TaskModel, QAfterSortBy> sortByIsCompletedDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isCompleted', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> sortByStringify() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'stringify', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> sortByStringifyDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'stringify', Sort.desc);
     });
   }
 
@@ -919,6 +1041,18 @@ extension TaskModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> thenByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> thenByHashCodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.desc);
+    });
+  }
+
   QueryBuilder<TaskModel, TaskModel, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -940,6 +1074,18 @@ extension TaskModelQuerySortThenBy
   QueryBuilder<TaskModel, TaskModel, QAfterSortBy> thenByIsCompletedDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isCompleted', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> thenByStringify() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'stringify', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> thenByStringifyDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'stringify', Sort.desc);
     });
   }
 
@@ -980,9 +1126,21 @@ extension TaskModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<TaskModel, TaskModel, QDistinct> distinctByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'hashCode');
+    });
+  }
+
   QueryBuilder<TaskModel, TaskModel, QDistinct> distinctByIsCompleted() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'isCompleted');
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QDistinct> distinctByStringify() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'stringify');
     });
   }
 
@@ -1021,9 +1179,21 @@ extension TaskModelQueryProperty
     });
   }
 
+  QueryBuilder<TaskModel, int, QQueryOperations> hashCodeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'hashCode');
+    });
+  }
+
   QueryBuilder<TaskModel, bool, QQueryOperations> isCompletedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isCompleted');
+    });
+  }
+
+  QueryBuilder<TaskModel, bool?, QQueryOperations> stringifyProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'stringify');
     });
   }
 
