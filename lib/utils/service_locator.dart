@@ -4,7 +4,7 @@ import "package:get_it/get_it.dart";
 import "package:hosto/repositories/task_repository.dart";
 import "package:hosto/repositories/task_repository_impl.dart";
 import 'package:hosto/models/task_model.dart';
-
+import "package:hosto/cubit/task_cubit.dart";
 
 final GetIt locator = GetIt.instance();
 
@@ -14,8 +14,12 @@ Future<void> setupLocator() async
  final isar = await Isar.open([TaskModelSchema], directory: dir.path );
  locator.registerSingleton<Isar>(isar);
 
-   locator.registerLazySingleton<TaskRepository>(
+  locator.registerLazySingleton<TaskRepository>(
     () => TaskRepositoryImpl(isar : locator<Isar>())
+  );
+
+   locator.registerLazySingleton<TaskCubit>(
+    () => TaskCubit(locator<TaskRepository>())
   );
 
 }

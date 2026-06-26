@@ -18,6 +18,7 @@ final class TaskMainState extends TaskState
       required this.tasks
     });
 
+
     @override
   List<Object?> get props => [tasks];
 }
