@@ -3,7 +3,7 @@ import "package:hosto/models/task_model.dart";
 import "package:hosto/repositories/task_repository_impl.dart";
 import "package:isar_community/isar.dart";
 import "package:get_it/get_it.dart";
-import "package:isar_community_flutter_libs/isar_flutter_libs.dart";
+
 
 
 
