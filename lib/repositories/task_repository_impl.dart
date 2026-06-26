@@ -89,8 +89,8 @@ class TaskRepositoryImpl extends TaskRepository
      }
      else
      {
-      specificTask.isCompleted = !specificTask.isCompleted;
-      await isar.taskModels.put(specificTask);
+      final updatedTask = specificTask.copyWith(isCompleted: !specificTask.isCompleted);
+      await isar.taskModels.put(updatedTask);
       return null;
      }
     });

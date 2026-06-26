@@ -21,7 +21,7 @@ void main()
 });
 
 tearDown(() async {
-  await isar.close(deleteFromDisk: true);
+   await isar.close(deleteFromDisk: true);
    await locator.reset();
 });
 
@@ -143,7 +143,7 @@ group('Tasks Features Tests', () {
     async
     {
       //Arrange 
-        final myTask = TaskModel(title: "My task is ready", isCompleted: false);
+        final myTask = TaskModel(title: "My task is ready");
         await repositoryImpl.saveTask(myTask);
       
       //Act
@@ -157,7 +157,7 @@ group('Tasks Features Tests', () {
     async
     {
       //Arrange 
-        final myTask = TaskModel(title: "My task is ready", isCompleted: false);
+        final myTask = TaskModel(title: "My task is ready");
         await repositoryImpl.saveTask(myTask);
       
       //Act

@@ -12,14 +12,14 @@ class TaskModel extends Equatable{
 
   //Attributes of the class
   final String title;
-  bool isCompleted;
+  final bool isCompleted ;
   final String? description;
   final DateTime? date;
   Id id = Isar.autoIncrement;
 
   TaskModel({//Constructor
     required this.title,
-    required this.isCompleted,
+    this.isCompleted = false,
     this.description,
     DateTime? date ,
   }): date = date ?? DateTime.now() ;//Syntaxe utilisee pour contourner l'immutabilite du keyword final . ne pouvant pas definir en constructeur on le fait ainsi
