@@ -30,17 +30,26 @@ class TaskCubit extends Cubit<TaskState>
     );
   }
 
-  Future<void> saveTask(TaskModel task)
-   async {
-        try
-        {
-          await repository.saveTask(task);
-        }
-        catch(e)
-        {
-          emit(TaskFailureState(message: e.toString()));
-        }
-   }
+ Future<String?> saveTask(TaskModel task) async {
+  try {
+    // 1. Capture the result from the repo
+    final String? error = await repository.saveTask(task);
+    
+    // 2. If there is an error, emit the failure state
+    if (error != null) {
+      emit(TaskFailureState(message: error));
+    }
+    
+    // 3. RETURN the error so the UI can use it
+    return error; 
+    
+  } catch (e) {
+    final errorMessage = e.toString();
+    emit(TaskFailureState(message: errorMessage));
+    // 4. Return the caught error
+    return errorMessage; 
+  }
+}
 
   Future<void> deleteTask(int id)
   async {

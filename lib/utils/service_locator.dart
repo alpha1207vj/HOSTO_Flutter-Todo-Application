@@ -6,7 +6,7 @@ import "package:hosto/repositories/task_repository_impl.dart";
 import 'package:hosto/models/task_model.dart';
 import "package:hosto/cubit/task_cubit.dart";
 
-final GetIt locator = GetIt.instance();
+final GetIt locator = GetIt.instance;
 
 Future<void> setupLocator() async
 {

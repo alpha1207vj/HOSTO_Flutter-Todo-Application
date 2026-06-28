@@ -91,7 +91,15 @@ class TaskRepositoryImpl extends TaskRepository
      {
       final updatedTask = specificTask.copyWith(isCompleted: !specificTask.isCompleted);
       await isar.taskModels.put(updatedTask);
-      return null;
+      final isDeleted =  await isar.taskModels.delete(specificTask.id);
+      if(isDeleted)
+      {
+        return null;
+      }
+      else 
+      {
+        return "Failed to delete task";
+      }
      }
     });
     }
